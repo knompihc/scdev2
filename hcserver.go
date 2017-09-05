@@ -32,7 +32,7 @@ type NetAdaptor struct {
 }
 
 type Resp struct {
-	Data string
+	Data interface{}
 }
 
 var (
@@ -73,8 +73,11 @@ func respHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("no response received")
 		resp = []byte("no response received")
 	}
-
-	renderTemplate(w, "response", Resp{string(resp)})
+	var response interface{}
+	json.Unmarshal(resp, &response)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(resp)
+	//renderTemplate(w, "response", Resp{string(resp)})
 }
 
 func makeResponse(firstByteStr, secondByteStr string) ([]byte, error) {
