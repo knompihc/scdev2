@@ -1,14 +1,28 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 	<head>
-		<title>streetcomm dev 2.0</title>
+	<title>light command test</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	</head>
 	<body>
-		<div>
-			<h3>Please enter your hex code here.</h3>
-			<form action = "/resp" method="get" >
-				<input type="textbox" name="hexcode" value="Enter your hex code here"/><br><br/>
-				<input type="submit" value="OK">
-			</form>
+	<div class="container">
+	<h2>Please enter your hex code here.</h2>
+	<form action = "/resp" method="GET" >
+		<div class="form-group">
+		<label for="firstByte">FIRST BYTE</label>
+		<input type="text" class="form-control" id="firstByte" name="firstByte">
+		<label for="secondByte">SECOND BYTE</label>
+		<input type="text" class="form-control" id="secondByte" name="secondByte">
 		</div>
+		<div class="form-group">
+		<button type="submit" class="btn btn-default">Submit</button>
+		</div>
+	</form>
+	</div>
 	</body>
-</html>	
+</html>
+
