@@ -34,6 +34,15 @@ type NetAdaptor struct {
 type Resp struct {
 	Data interface{}
 }
+type ReqData struct {
+	FirstByte  string
+	SecondByte string
+	DeviceId   string
+}
+
+const (
+	PORT = "9001"
+)
 
 var (
 	tclNetAdaptor *NetAdaptor
@@ -57,6 +66,15 @@ func renderTemplate(w http.ResponseWriter, tmpl string, resp interface{}) {
 	}
 }
 
+func main() {
+	reqChan, respChan = make(chan string), make(chan string)
+
+	http.HandleFunc("/", viewHex)
+	http.HandleFunc("/resp", respHandler)
+	fmt.Println("Started running at", PORT)
+	http.ListenAndServe(":"+PORT, nil)
+}
+
 func viewHex(w http.ResponseWriter, r *http.Request) {
 	renderTemplate(w, "hexcode", "")
 }
@@ -67,8 +85,10 @@ func respHandler(w http.ResponseWriter, r *http.Request) {
 
 	firstByteStr := r.Form.Get("firstByte")
 	secondByteStr := r.Form.Get("secondByte")
+	deviceIdStr := r.Form.Get("deviceId")
 
-	resp, err := makeResponse(firstByteStr, secondByteStr)
+	reqData := NewReqData(firstByteStr, secondByteStr, deviceIdStr)
+	resp, err := reqData.makeResponse()
 	if err != nil {
 		log.Println("no response received")
 		resp = []byte("no response received")
@@ -80,9 +100,17 @@ func respHandler(w http.ResponseWriter, r *http.Request) {
 	//renderTemplate(w, "response", Resp{string(resp)})
 }
 
-func makeResponse(firstByteStr, secondByteStr string) ([]byte, error) {
-	log.Println("input received ", firstByteStr, secondByteStr)
-	data, err := makeData(firstByteStr, secondByteStr)
+func NewReqData(firstByte, secondByte, deviceId string) *ReqData {
+	return &ReqData{
+		FirstByte:  firstByte,
+		SecondByte: secondByte,
+		DeviceId:   deviceId,
+	}
+}
+
+func (rd *ReqData) makeResponse() ([]byte, error) {
+	log.Println("input received ", rd.FirstByte, rd.SecondByte, rd.DeviceId)
+	data, err := rd.makeData()
 	if err != nil {
 		log.Println("error in creating data")
 		return nil, err
@@ -95,13 +123,13 @@ func makeResponse(firstByteStr, secondByteStr string) ([]byte, error) {
 	return resp, nil
 }
 
-func makeData(firstByteStr, secondByteStr string) ([]byte, error) {
-	firstHex, err := hex.DecodeString(firstByteStr)
+func (rd *ReqData) makeData() ([]byte, error) {
+	firstHex, err := hex.DecodeString(rd.FirstByte)
 	if err != nil {
 		log.Println(err, "convert error")
 		return nil, err
 	}
-	secondHex, err := hex.DecodeString(secondByteStr)
+	secondHex, err := hex.DecodeString(rd.SecondByte)
 	if err != nil {
 		log.Println(err, "convert error")
 		return nil, err
@@ -116,7 +144,8 @@ func makeData(firstByteStr, secondByteStr string) ([]byte, error) {
 			"ty":4,
 			"cnf":"text/plain:0",
 			"cs":300,
-			"con":"{\"payload_dl\":{\"deveui\":\"0004a30b001ba065\",\"port\":2,\"confirmed\":true,\"data\":\"` +
+			"con":"{\"payload_dl\":{\"deveui\":\"` + rd.DeviceId +
+		`\",\"port\":2,\"confirmed\":true,\"data\":\"` +
 		plData + `\",\"on_busy\":\"fail\",\"tag\":\"98861544465w\"}}"
 		}
 	}`
@@ -173,15 +202,6 @@ func updateRequest(req *http.Request, client string) {
 
 		req.SetBasicAuth("chipmonk", "123")
 	}
-}
-
-func main() {
-	reqChan, respChan = make(chan string), make(chan string)
-
-	http.HandleFunc("/", viewHex)
-	http.HandleFunc("/resp", respHandler)
-	fmt.Println("Started running at 8004")
-	http.ListenAndServe(":8004", nil)
 }
 
 func chkErr(err error) {
