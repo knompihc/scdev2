@@ -163,7 +163,7 @@ func sendData(data []byte) ([]byte, error) {
 
 	updateRequest(req, tclNetAdaptor.Client)
 
-	client := &http.Client{Timeout: time.Second * 75}
+	client := &http.Client{Timeout: time.Second * 180}
 	resp, err := client.Do(req)
 
 	if err != nil {
