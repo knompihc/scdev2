@@ -1,31 +1,31 @@
-<!DOCTYPE html>
-
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<html>
 	<head>
-	<title>light command test</title>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="hex.js"></script>
-	</head>
+		<title>light command test</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<body>
-	<div class="container">
-	<h2>Please enter your hex code here.</h2>
-	<form id="hexForm" action="/resp" method="POST">
-		<div class="form-group">
-		<label for="firstByte">FIRST BYTE</label>
-		<input type="text" class="form-control" id="firstByte" name="firstByte">
-		<label for="secondByte">SECOND BYTE</label>
-		<input type="text" class="form-control" id="secondByte" name="secondByte">
+		<div class="container">
+			<h2>Please enter your hex code here.</h2>
+			<form id="hexForm" v-on:submit="getResponse">
+				<div class="form-group">
+					<label for="firstByte">FIRST BYTE</label>
+					<input type="text" class="form-control" id="firstByte" name="firstByte">
+					<label for="secondByte">SECOND BYTE</label>
+					<input type="text" class="form-control" id="secondByte" name="secondByte">
+				</div>
+				<div class="form-group">
+					<button type="submit" class="btn btn-default">Submit</button>
+				</div>
+			</form>
 		</div>
-		<div class="form-group">
-		<button type="submit" class="btn btn-default">Submit</button>
-		</div>
-	</form>
-	</div>
-	<div id="response"></div> 
+		<div id="response">
+		</div> 
+		<!-- <script src="static/Vue.js"></script>
+		<script src="static/hex.js"></script> -->
+	</head>
 	</body>
 </html>
 

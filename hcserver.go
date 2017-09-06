@@ -180,6 +180,8 @@ func main() {
 
 	http.HandleFunc("/", viewHex)
 	http.HandleFunc("/resp", respHandler)
+	st := http.FileServer(http.Dir("./static"))
+	http.Handle("/static", http.StripPrefix("/static/", st))
 	fmt.Println("Started running at 8004")
 	http.ListenAndServe(":8004", nil)
 }
